@@ -51,7 +51,7 @@ jobs:                             # Задачи, которые будут вы
   deploy:
     needs: build-and-push
     name: Deploy to Kubernetes
-    if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/2')
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
