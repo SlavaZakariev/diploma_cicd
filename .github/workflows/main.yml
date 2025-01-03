@@ -24,10 +24,10 @@ jobs:                             # Задачи, которые будут вы
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} # Логин в Doсker Hub
           password: ${{ secrets.DOCKERHUB_TOKEN }}    # Пароль в Doсker Hub
-          
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3 # Шаблон GitHub - Сборка к содержимому репозитория
-      
+
       - name: Extract version from commit messages
         run: |
           VERSION=$(git log -1 --pretty=format:%B)
