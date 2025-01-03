@@ -3,8 +3,8 @@ name: CI/CD Pipeline for nginx-app # Имя конвеера
 on:                 # Триггер, по которому будет запускаться конвеер
   push:             # Запускает рабочий процесс по событиям push запросов
     branches: main  # Ветка куда обращаемся
-#    tags: 
-#      - '1*'
+    tags: 
+      - '1.0.1'
 
 env:                             # Описание переменных
   IMAGE: slavazakariev/nginx-app # Переменная образа в Docker Hub
