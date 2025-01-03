@@ -14,7 +14,7 @@ env:                             # Описание переменных
 jobs:                             # Задачи, которые будут выполняться в рамках конвеера
   build-and-push:                 # Тип задачи - Сборка и Публикация
     name: Build Docker image      # Имя задачи - Сборка образа
-    runs-on: ubuntu-latest        # Тип виртуальной машины, на которой будет выполняться задача
+    runs-on: ubuntu-22.04         # Тип виртуальной машины, на которой будет выполняться задача
     steps:                        # Шаги, которые будут выполняться в процессе
       - name: Checkout            # Имя шага
         uses: actions/checkout@v3 # Шаблон GitHub - Доступ к содержимому репозитория
@@ -50,7 +50,7 @@ jobs:                             # Задачи, которые будут вы
     needs: build-and-push
     name: Deploy to Kubernetes
     if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/1')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
