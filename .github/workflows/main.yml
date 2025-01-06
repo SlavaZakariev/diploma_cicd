@@ -29,7 +29,7 @@ jobs:                             # Задачи, которые будут вы
         uses: docker/setup-buildx-action@v3 # Шаблон GitHub - Сборка содержимого репозитория
 
       - name: Extract version from commit messages # Имя шага
-        run: |                                     # Назначение переменно 
+        run: |                                     # Назначение переменной скриптом
           VERSION=$(git log -1 --pretty=format:%B)
           if [[ ! -z "$VERSION" ]]; then
             echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -38,8 +38,8 @@ jobs:                             # Задачи, которые будут вы
             exit 1
           fi
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      - name: Build and push              # Имя шага
+        uses: docker/build-push-action@v5 # Шаблон GitHub - Cоздать и отправить образ в Docker Hub
         with:
           context: .
           file: ./Dockerfile
@@ -52,17 +52,17 @@ jobs:                             # Задачи, которые будут вы
     if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-22.04      # Версия ОС машины, на которой будет выполняться задача
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Checkout            # Имя шага
+        uses: actions/checkout@v3 # Шаблон GitHub - Сборка содержимого репозитория
         
-      - name: Configure Kubernetes
-        uses: azure/k8s-set-context@v3
+      - name: Configure Kubernetes     # Имя шага
+        uses: azure/k8s-set-context@v3 # Шаблон GitHub - Создать контекст для Kubernetes
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
-      - name: Extract version from commit messages
-        run: |
+      - name: Extract version from commit messages # Имя шага
+        run: |                                     # Назначение переменной скриптом
           VERSION=$(git log -1 --pretty=format:%B)
           if [[ ! -z "$VERSION" ]]; then
             echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -71,20 +71,26 @@ jobs:                             # Задачи, которые будут вы
             exit 1
           fi
 
-      - name: Replace image tag in deployment.yaml # Замена тэга в файле deployment.yaml
+      - name: Replace image tag in deployment.yaml # Имя шага
         if: env.DEPLOY == 'false'
         run: |
           sed -i "s|image: slavazakariev/nginx-app:.*|image: ${{ env.IMAGE }}|" ./nginx-app/deployment.yaml
         env:
           IMAGE_TAG: slavazakariev/nginx-app:${{ env.VERSION }}
       
-      - name: Create kubeconfig file
-        run: mkdir -p $HOME/.kube/   # Создание каталога для файла аутентификации Кубернетеса
+      - name: Create kubeconfig file # Имя шага
+        run: mkdir -p $HOME/.kube/   # Создание каталога для файла аутентификации Kubernetes
 
-      - name: Authenticate to Kubernetes cluster 
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        run: echo "${KUBE_CONFIG_DATA}" > ${HOME}/.kube/config
- 
-      - name: Apply Kubernetes manifest
-        run: kubectl apply -f ./nginx-app/deployment.yaml # Запуск приложения в Кубернетесе
+      - name: Authenticate to Kubernetes cluster               # Имя шага
+        env:                                                   # Аутентификация через переменную
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}    # Переменная с конфигом для Kubernetes
+        run: echo "${KUBE_CONFIG_DATA}" > ${HOME}/.kube/config # Добавить конфиг в файл по умолчанию
+
+      - name: Deploy to Cluster   # Имя шага
+        uses: azure/k8s-deploy@v5 # Шаблон GitHub - Развёртывание в Kubernetes
+        with:
+          action: deploy
+          manifests: ./nginx-app/deployment.yaml
+          namespace: application
+          images: ${{ env.IMAGE_NAME }}:${{ env.NEW_TAG }}
+        
