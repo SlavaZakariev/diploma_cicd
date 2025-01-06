@@ -74,7 +74,7 @@ jobs:                             # Задачи, которые будут вы
       - name: Replace image tag in deployment.yaml # Имя шага
         if: env.DEPLOY == 'false'
         run: |
-          sed -i "s|image: slavazakariev/nginx-app:.*|image: ${{ env.IMAGE }}|" ./nginx-app/deployment.yaml
+          sed -i "s|image: slavazakariev/nginx-app:.*|image: ${{ env.IMAGE }}|" deployment.yaml
         env:
           IMAGE_TAG: slavazakariev/nginx-app:${{ env.VERSION }}
       
@@ -90,7 +90,5 @@ jobs:                             # Задачи, которые будут вы
         uses: azure/k8s-deploy@v5 # Шаблон GitHub - Развёртывание в Kubernetes
         with:
           action: deploy
-          manifests: ./nginx-app/deployment.yaml
-          namespace: application
-          images: ${{ env.IMAGE_NAME }}:${{ env.NEW_TAG }}
+          manifests: deployment.yaml
         
