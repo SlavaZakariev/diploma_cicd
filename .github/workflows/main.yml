@@ -91,4 +91,5 @@ jobs:                             # Задачи, которые будут вы
         with:
           action: deploy
           manifests: deployment.yaml
+          namespace: monitoring
         
