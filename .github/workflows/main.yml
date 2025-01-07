@@ -86,9 +86,5 @@ jobs:                             # Задачи, которые будут вы
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}    # Переменная с конфигом для Kubernetes
         run: echo "${KUBE_CONFIG_DATA}" > ${HOME}/.kube/config # Добавить конфиг в файл по умолчанию
 
-      - name: Deploy to Cluster   # Имя шага
-        uses: azure/k8s-deploy@v5 # Шаблон GitHub - Развёртывание в Kubernetes
-        with:
-          action: deploy
-          manifests: deployment.yaml
-          namespace: monitoring
+      - name: Apply Kubernetes manifest
+        run: kubectl apply -f deployment.yaml # Запуск приложения в Кубернетесе
