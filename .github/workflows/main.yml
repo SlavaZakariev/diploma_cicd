@@ -92,4 +92,3 @@ jobs:                             # Задачи, которые будут вы
           action: deploy
           manifests: deployment.yaml
           namespace: monitoring
-        

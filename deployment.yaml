@@ -1,6 +1,6 @@
 ---
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: myapp
   namespace: monitoring
@@ -35,4 +35,4 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 30080
+    nodePort: 30081
